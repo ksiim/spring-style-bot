@@ -11,3 +11,4 @@ class User(Base):
     full_name: Mapped[str]
     username: Mapped[str] = mapped_column(nullable=True)
     admin: Mapped[bool] = mapped_column(default=False)
+    phone_number: Mapped[str] = mapped_column(nullable=True)

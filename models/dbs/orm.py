@@ -3,10 +3,21 @@ import asyncio
 from models.databases import Session
 from models.dbs.models import *
 
-from sqlalchemy import insert, inspect, or_, select, text
+from sqlalchemy import insert, inspect, or_, select, text, update
 
 
 class Orm:
+    
+    @staticmethod
+    async def update_user_phone_number(message):
+        async with Session() as session:
+            query = (
+                update(User)
+                .where(User.telegram_id == message.from_user.id)
+                .values(phone_number=message.contact.phone_number)
+            )
+            await session.execute(query)
+            await session.commit()
     
     @staticmethod
     async def create_user(message):
