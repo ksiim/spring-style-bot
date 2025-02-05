@@ -32,31 +32,21 @@ async def send_start_message(message: Message):
     
 @dp.callback_query(F.data == "check_sub")
 async def check_sub_handler(callback: CallbackQuery):
-    # await callback.message.answer(
-    #     text=subscription_thank_you_message,
-    #     reply_markup=send_phone_markup
-    # )
     if await is_in_channel(CHANNEL_ID, callback.from_user.id):
         await callback.message.answer(
             text=subscription_thank_you_message,
-            reply_markup=send_phone_markup
+            reply_markup=go_to_test_markup
         )
     else:
         await callback.message.delete()
         await send_start_message(callback)
         
-@dp.message(F.contact)
-async def get_phone_number(message: Message, state: FSMContext):
-    await Orm.update_user_phone_number(message)
-    await message.answer(
-        text=phone_number_confirmation_text,
-        reply_markup=go_to_test_markup
-    )
     
 @dp.callback_query(F.data == "go_to_test")
 async def go_to_test_handler(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
-        text=start_test_text
+        text=start_test_text,
+        parse_mode='html'
     )
     await asyncio.sleep(5)
     
@@ -93,7 +83,8 @@ async def finish_test(user_id, data):
     await bot.send_message(
         chat_id=user_id,
         text=ending_text,
-        reply_markup=ending_markup
+        reply_markup=ending_markup,
+        parse_mode="html"
     )
     
     

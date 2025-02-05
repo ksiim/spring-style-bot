@@ -9,6 +9,17 @@ from sqlalchemy import insert, inspect, or_, select, text, update
 class Orm:
     
     @staticmethod
+    async def get_admins():
+        async with Session() as session:
+            query = (
+                select(User)
+                .where(User.admin == True)
+            )
+            result = await session.execute(query)
+            admins = result.scalars().all()
+            return admins
+    
+    @staticmethod
     async def update_user_phone_number(message):
         async with Session() as session:
             query = (
